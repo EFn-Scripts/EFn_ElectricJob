@@ -1,6 +1,6 @@
 fx_version 'cerulean'
 game 'gta5'
-author 'AgentofDeath'
+author 'EFn-Scripts'
 client_scripts {    
     'config.lua', 
     '@PolyZone/client.lua',
