@@ -76,7 +76,6 @@ spawnWorkVehicle = function()
         Notify(Config.Strings.alreadyCar)
         return
     end
-    if Config.Framework =='esx' or Config.Framework =='standalone' then
         local ped = PlayerPedId()
         local model = `boxville`
         RequestModel(model)
@@ -101,30 +100,6 @@ spawnWorkVehicle = function()
         AddTextComponentString(Config.Strings.workCar)
         EndTextCommandSetBlipName(blip)
         needJob = true 
-    elseif Config.Framework =='QBCore' then
-        local coords = Config.VehSpawn
-        QBCore.Functions.SpawnVehicle("boxville", function(veh)
-            TaskWarpPedIntoVehicle(PlayerPedId(), veh, -1)
-            SetVehicleEngineOn(veh, true, true)
-            SetVehicleNumberPlateText(veh, "ELEC"..tostring(math.random(1000, 9999)))
-            SetEntityHeading(veh, coords.w)
-            exports[Config.Fuel]:SetFuel(veh, 100.0)
-            SetEntityAsMissionEntity(veh, true, true)
-            TriggerEvent("vehiclekeys:client:SetOwner", QBCore.Functions.GetPlate(veh))
-            vehicleout = true
-            Notify(Config.Strings.goTo)
-            blip = AddBlipForEntity(veh)
-            SetBlipSprite(blip, 354)
-            SetBlipDisplay(blip, 4)
-            SetBlipScale(blip, 1.0)
-            SetBlipColour(blip, 30)
-            SetBlipAsShortRange(blip, true)
-            BeginTextCommandSetBlipName("STRING")
-            AddTextComponentString(Config.Strings.workCar)
-            EndTextCommandSetBlipName(blip)
-            needJob = true
-        end, coords, true)
-    end
 end
 
 deleteworkVehicle = function()
