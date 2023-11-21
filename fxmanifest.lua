@@ -1,6 +1,9 @@
 fx_version 'cerulean'
+
 game 'gta5'
+
 author 'EFn-Scripts'
+
 client_scripts {    
     'config.lua', 
     '@PolyZone/client.lua',
@@ -8,8 +11,11 @@ client_scripts {
     '@PolyZone/EntityZone.lua',
     '@PolyZone/CircleZone.lua',
     '@PolyZone/ComboZone.lua', 
-    'client.lua'}
+    'client.lua'
+}
+
 server_scripts {
     'config.lua', 
-    'server.lua'}
+    'server.lua'
+}
 
