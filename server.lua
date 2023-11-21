@@ -1,10 +1,19 @@
-if Config.Framework =='esx' then
-	ESX = nil
-    TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-elseif Config.Framework =='QBCore' then
-	QBCore = exports['qb-core']:GetCoreObject()
-else
-	print('no framework set or standalone')
+ESX, QBCore = nil, nil
+
+if Config.Framework  == 'esx' then
+    pcall(function() ESX = exports[Config.Strings.esxName]:getSharedObject() end)
+    if ESX == nil then
+        TriggerEvent(Config.Strings.esxMain, function(obj) ESX = obj end)
+    end
+    
+elseif Config.Framework == 'qbcore' then
+    TriggerEvent(Config.Strings.qbMain, function(obj) QBCore = obj end)
+    if QBCore == nil then
+        QBCore = exports[Config.Strings.qbName]:GetCoreObject()
+    end
+    
+elseif Config.Framework  == 'standalone' then
+	
 end
 
 RegisterServerEvent('GetPaid')
