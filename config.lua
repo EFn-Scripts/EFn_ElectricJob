@@ -40,7 +40,16 @@ Config.Strings = {
     offDuty = 'You are off duty', --off dutgy notification
     dtSpawn = 'Press E to spawn work vehicle', --press me to spawn
     dtDuty = 'Press E to toggle duty', --press me to toggle duty
-    dtDelete = 'Press E to store work vehicle' --press me to store
+    dtDelete = 'Press E to store work vehicle', --press me to store
+    esxName = 'es_extended', 
+    esxMain = 'esx:getSharedObject', 
+    esxLoad = 'esx:playerLoaded',
+    esxJob = 'esx:setJob',
+    qbName = 'qb-core',
+    qbMain = 'QBCore:GetObject',
+    qbLoad = 'QBCore:Client:OnPlayerLoaded',
+    qbjob = 'QBCore:Client:OnJobUpdate',
+    qbDuty = 'QBCore:Client:SetDuty',
 }
 
 Config.JobLocations = { --locations of lightpoles don't touch unless you read rest of code
