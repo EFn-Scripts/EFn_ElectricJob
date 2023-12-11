@@ -30,8 +30,8 @@ Notify = function(text)
     --SetNotificationTextEntry('STRING') -- Standalone notification
     --AddTextComponentString(text) -- Standalone notification
     --DrawNotification(0,1) -- Standalone notification
-    ESX.ShowNotification(text) -- ESX Notification
-    --QBCore.Functions.Notify(text, "success") -- QB Notify
+    --ESX.ShowNotification(text) -- ESX Notification
+    QBCore.Functions.Notify(text, "success") -- QB Notify
     -- add your own and hash off others.
 end
 
@@ -79,6 +79,16 @@ local deletecar = CircleZone:Create(vector3(740.21, -1910.67, 29.29), 2.0, {
     debugPoly = false
 })
 
+function giveKeys(plate, vehicle)
+    if GetResourceState('qb-vehiclekeys') == 'started' then
+        TriggerEvent('vehiclekeys:client:SetOwner', plate)
+    elseif GetResourceState('cd_garage') == 'started' then
+        TriggerEvent('cd_garage:AddKeys', plate)
+    else
+        -- add your own keys here
+    end
+end
+
 spawnWorkVehicle = function()
     if vehicleOut then
         Notify(Config.Strings.alreadyCar)
@@ -97,6 +107,10 @@ spawnWorkVehicle = function()
         SetModelAsNoLongerNeeded(model)
         SetVehRadioStation(vehicle, 'OFF')
         vehicleOut = true
+        local plate = GetVehicleNumberPlateText(vehicle)
+        print(plate)
+        giveKeys(plate)
+        exports["LegacyFuel"]:SetFuel(vehicle, 100)
         Notify(Config.Strings.goTo)
         blip = AddBlipForEntity(vehicle)
         SetBlipSprite(blip, 354)
@@ -121,7 +135,7 @@ deleteworkVehicle = function()
             SetEntityAsMissionEntity(vehicle)
             SetVehicleHasBeenOwnedByPlayer(vehicle, true)
             Wait(100)
-            InvokeNative(0xEA386986E786A54F, PointerValueIntInitialized(vehicle))
+            --InvokeNative(0xEA386986E786A54F, PointerValueIntInitialized(vehicle))
             SetEntityAsNoLongerNeeded(vehicle)
             DeleteEntity(vehicle)
             DeleteVehicle(vehicle)
@@ -148,7 +162,7 @@ giveJob = function()
     Notify(Config.Strings.lookWork)
     Wait(Config.WaitForJobTime)
     Notify(Config.Strings.workFound)
-    local jobLoc = Config.JobLocations[math.random(1,#Config.JobLocations)]
+    jobLoc = Config.JobLocations[math.random(1,#Config.JobLocations)]
     SetNewWaypoint(jobLoc.x, jobLoc.y)
     createJobBlip(jobLoc, true)    
    activeJob = CircleZone:Create(jobLoc, 2.0, {
@@ -158,6 +172,20 @@ giveJob = function()
     })
     needJob = false
     hasJob = true
+    local distanceToJobLoc = 0
+    CreateThread(function()
+        while hasJob do
+            Wait(1000)
+
+            local playerCoords = GetEntityCoords(ped)
+            distanceToJobLoc = #(playerCoords - vector3(jobLoc.x, jobLoc.y, playerCoords.z))
+            print(distanceToJobLoc)
+
+            if duty and distanceToJobLoc < 250.0 then
+                TriggerServerEvent("setlight:off", jobLoc)
+            end
+        end
+    end)
     activeJob:onPointInOut(PolyZone.getPlayerPosition, function(isPointInside, point)
         if isPointInside and duty then
             atjobSite = true
@@ -175,22 +203,54 @@ fixPole = function()
     local lightpole = GetClosestObjectOfType(loc, 3.0, GetHashKey('prop_streetlight_01'), false, false, false)
     local spot = GetEntityCoords(lightpole)
     if lightpole ~= 0 then
-        TaskTurnPedToFaceEntity(ped, lightpole, 2000)
-        Wait(2000)
-        ClearPedTasksImmediately(ped)
-        TaskStartScenarioInPlace(ped, 'WORLD_HUMAN_WELDING', 0, true)
-        exports['progressBars']:startUI(Config.FixTime, Config.Strings.fixPole)
-        Wait(Config.FixTime)
-        ClearPedTasksImmediately(ped)
-        TriggerServerEvent("setlight:on", spot)
-        needJob = true
-        jobComplete = true
-        atJobSite = false
-        TriggerServerEvent('GetPaid', spot)
-        createJobBlip(false, false)
-        Notify(Config.Strings.jobDone)
-        activeJob:destroy()
-        hasJob = false
+        if not Config.Framework == 'qbcore' then
+            TaskTurnPedToFaceEntity(ped, lightpole, 2000)
+            Wait(2000)
+            ClearPedTasksImmediately(ped)
+            TaskStartScenarioInPlace(ped, 'WORLD_HUMAN_WELDING', 0, true)
+            exports['progressBars']:startUI(Config.FixTime, Config.Strings.fixPole)
+            Wait(Config.FixTime)
+            ClearPedTasksImmediately(ped)
+            TriggerServerEvent("setlight:on", spot)
+            needJob = true
+            jobComplete = true
+            atJobSite = false
+            TriggerServerEvent('GetPaid', spot)
+            createJobBlip(false, false)
+            Notify(Config.Strings.jobDone)
+            activeJob:destroy()
+            hasJob = false
+        else
+            TaskTurnPedToFaceEntity(ped, lightpole, 2000)
+            Wait(2000)
+            ClearPedTasksImmediately(ped)
+            TaskStartScenarioInPlace(ped, 'WORLD_HUMAN_WELDING', 0, true)
+            QBCore.Functions.Progressbar('fixing_light_pole', 'Fixing Light Pole', Config.FixTime, false, true, {
+                disableMovement = false,
+                disableCarMovement = false,
+                disableMouse = false,
+                disableCombat = false,
+            }, {}, {}, {}, function()
+                -- This code runs if the progress bar completes successfully
+        
+                ClearPedTasksImmediately(ped)
+                print(jobLoc)
+                TriggerServerEvent("setlight:on", jobLoc)
+                needJob = true
+                jobComplete = true
+                atJobSite = false
+                TriggerServerEvent('GetPaid', spot)
+                createJobBlip(false, false)
+                Notify(Config.Strings.jobDone)
+                activeJob:destroy()
+                hasJob = false
+            end, function()
+                -- This code runs if the progress bar gets cancelled
+                ClearPedTasksImmediately(ped)
+                hasJob = false
+                Notify("Job cancelled.")
+            end)
+        end
     else
         Notify('You are not at the lightpole!')
     end
