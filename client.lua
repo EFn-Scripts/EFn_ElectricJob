@@ -1,4 +1,4 @@
-local Instartzone, Inspawnvehicle, Indeletecar, duty, needJob, atjobSite, jobComplete, hasJob = false, false, false, false, false, false, false,false
+local Instartzone, Inspawnvehicle, Indeletecar, duty, needJob, atjobSite, jobComplete, hasJob, distanceToJobLoc = false, false, false, false, false, false, false, false, nil
 
 ESX, QBCore = nil, nil
 
@@ -165,27 +165,26 @@ giveJob = function()
     jobLoc = Config.JobLocations[math.random(1,#Config.JobLocations)]
     SetNewWaypoint(jobLoc.x, jobLoc.y)
     createJobBlip(jobLoc, true)    
-   activeJob = CircleZone:Create(jobLoc, 2.0, {
+    activeJob = CircleZone:Create(jobLoc, 2.0, {
         name = "jobZone",
         useZ = false,
         debugPoly = false
     })
     needJob = false
     hasJob = true
-    local distanceToJobLoc = 0
     CreateThread(function()
-        while hasJob do
+        while true do
             Wait(1000)
-
             local playerCoords = GetEntityCoords(ped)
-            distanceToJobLoc = #(playerCoords - vector3(jobLoc.x, jobLoc.y, playerCoords.z))
+            local distanceToJobLoc = #(playerCoords - jobLoc)
             print(distanceToJobLoc)
-
             if duty and distanceToJobLoc < 250.0 then
                 TriggerServerEvent("setlight:off", jobLoc)
+		break
             end
         end
     end)
+
     activeJob:onPointInOut(PolyZone.getPlayerPosition, function(isPointInside, point)
         if isPointInside and duty then
             atjobSite = true
@@ -354,8 +353,8 @@ CreateThread(function()
         if atjobSite and duty then
             sleep = 0           
             if IsControlJustReleased(0, 38) and duty then
-                local location = GetEntityCoords(PlayerPedId())
-                TriggerServerEvent("setlight:off", location)
+                --local location = GetEntityCoords(PlayerPedId())
+                --TriggerServerEvent("setlight:off", location)
                 HideTextUI()				
                 fixPole()
             end
