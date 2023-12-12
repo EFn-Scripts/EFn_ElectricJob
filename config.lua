@@ -2,7 +2,7 @@
 
 Config = {} --don't touch
 
-Config.Framework = 'esx' --standalone, esx, QBCore
+Config.Framework = 'qbcore' --standalone, esx, QBCore
 
 Config.Payment = 'bank' -- bank or cash payment
 

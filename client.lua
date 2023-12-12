@@ -89,6 +89,16 @@ function giveKeys(plate, vehicle)
     end
 end
 
+function AddFuel(vehicle)
+    if GetResourceState('LegacyFuel') == 'started' then
+        exports["LegacyFuel"]:SetFuel(vehicle, 100)
+    elseif GetResourceState('cd_garage') == 'started' then
+        exports["ps-fuel"]:SetFuel(vehicle, 100)
+    else
+        -- add your own keys here
+    end
+end
+
 spawnWorkVehicle = function()
     if vehicleOut then
         Notify(Config.Strings.alreadyCar)
@@ -96,6 +106,7 @@ spawnWorkVehicle = function()
     end
         local ped = PlayerPedId()
         local model = `boxville`
+        local plate = GetVehicleNumberPlateText(vehicle)
         RequestModel(model)
         while not HasModelLoaded(model) do Wait(10) end
         local vehicle = CreateVehicle(model, Config.VehSpawn, true, false)
@@ -107,10 +118,8 @@ spawnWorkVehicle = function()
         SetModelAsNoLongerNeeded(model)
         SetVehRadioStation(vehicle, 'OFF')
         vehicleOut = true
-        local plate = GetVehicleNumberPlateText(vehicle)
-        print(plate)
         giveKeys(plate)
-        exports["LegacyFuel"]:SetFuel(vehicle, 100)
+        AddFuel(vehicle)
         Notify(Config.Strings.goTo)
         blip = AddBlipForEntity(vehicle)
         SetBlipSprite(blip, 354)
@@ -135,7 +144,6 @@ deleteworkVehicle = function()
             SetEntityAsMissionEntity(vehicle)
             SetVehicleHasBeenOwnedByPlayer(vehicle, true)
             Wait(100)
-            --InvokeNative(0xEA386986E786A54F, PointerValueIntInitialized(vehicle))
             SetEntityAsNoLongerNeeded(vehicle)
             DeleteEntity(vehicle)
             DeleteVehicle(vehicle)
@@ -230,8 +238,6 @@ fixPole = function()
                 disableMouse = false,
                 disableCombat = false,
             }, {}, {}, {}, function()
-                -- This code runs if the progress bar completes successfully
-        
                 ClearPedTasksImmediately(ped)
                 print(jobLoc)
                 TriggerServerEvent("setlight:on", jobLoc)
@@ -244,7 +250,6 @@ fixPole = function()
                 activeJob:destroy()
                 hasJob = false
             end, function()
-                -- This code runs if the progress bar gets cancelled
                 ClearPedTasksImmediately(ped)
                 hasJob = false
                 Notify("Job cancelled.")
@@ -353,8 +358,6 @@ CreateThread(function()
         if atjobSite and duty then
             sleep = 0           
             if IsControlJustReleased(0, 38) and duty then
-                --local location = GetEntityCoords(PlayerPedId())
-                --TriggerServerEvent("setlight:off", location)
                 HideTextUI()				
                 fixPole()
             end
