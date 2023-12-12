@@ -46,9 +46,7 @@ HideTextUI = function()
     --exports['qb-drawtext']:HideText()
     TriggerEvent('cd_drawtextui:HideUI')
 end
---stop that shit
 
---if you don't really know what you're doing like, leave this alone please.
 CreateThread(function()
     blip = AddBlipForCoord(Config.Start)
     SetBlipSprite(blip, 354)
@@ -92,7 +90,7 @@ end
 function AddFuel(vehicle)
     if GetResourceState('LegacyFuel') == 'started' then
         exports["LegacyFuel"]:SetFuel(vehicle, 100)
-    elseif GetResourceState('cd_garage') == 'started' then
+    elseif GetResourceState('ps-fuel') == 'started' then
         exports["ps-fuel"]:SetFuel(vehicle, 100)
     else
         -- add your own keys here
