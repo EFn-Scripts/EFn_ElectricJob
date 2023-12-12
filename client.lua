@@ -106,10 +106,10 @@ spawnWorkVehicle = function()
     end
         local ped = PlayerPedId()
         local model = `boxville`
-        local plate = GetVehicleNumberPlateText(vehicle)
         RequestModel(model)
         while not HasModelLoaded(model) do Wait(10) end
         local vehicle = CreateVehicle(model, Config.VehSpawn, true, false)
+        local plate = GetVehicleNumberPlateText(vehicle)
         local id = NetworkGetNetworkIdFromEntity(vehicle)
         SetNetworkIdCanMigrate(id, true)
         SetEntityAsMissionEntity(vehicle, true, false)
