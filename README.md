@@ -4,11 +4,4 @@ Simple Job. Go to start point on the map labeled on the map as "Electric Job".  
 ![spawnveh](https://user-images.githubusercontent.com/69638603/178843800-79280a0a-8860-48da-9ba4-608061a33b46.png)
 
 
-Requires:
-progressBars= https://github.com/EthanPeacock/progressBars can be changed, but I wont assist with this
-PolyZone= https://github.com/mkafrin/PolyZone can be changed, but I wont assist with these changes
-drawtext feature= https://github.com/dsheedes/cd_drawtextui or the default qb ones
-
-All of this is editable, but I will not assist in this manner.
-
-This is a no framework, ESX or QBCore asset.  Enjoy or some shit.
+Documentation: https://efn-scripts.gitbook.io/efn-scripts/efn_electricjob/getting-started
