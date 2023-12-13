@@ -13,7 +13,7 @@ elseif Config.Framework == 'qbcore' then
     end
     
 elseif Config.Framework  == 'standalone' then
-	
+	-- you can add your own custom framework here
 end
 
 RegisterServerEvent('GetPaid')
