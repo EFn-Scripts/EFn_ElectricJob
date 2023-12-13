@@ -17,13 +17,13 @@ elseif Config.Framework  == 'standalone' then
 end
 
 RegisterServerEvent('GetPaid')
-AddEventHandler('GetPaid', function(boob)
+AddEventHandler('GetPaid', function(homie)
     if Config.Framework == 'esx' then
         local _source = source
         local xPlayer = ESX.GetPlayerFromId(_source)
         local pCoords = GetEntityCoords(GetPlayerPed(_source))
         if not xPlayer then return end
-        if #(pCoords - boob) > 10 then print('Mod menu exploit') return end
+        if #(pCoords - homie) > 10 then print('Mod menu exploit') return end
         if Config.Payment == 'cash' then
             xPlayer.addMoney(Config.JobPay)
         elseif Config.Payment == 'bank' then
@@ -34,7 +34,7 @@ AddEventHandler('GetPaid', function(boob)
         local Player = QBCore.Functions.GetPlayer(_source)
         local pCoords = GetEntityCoords(GetPlayerPed(_source))
         if not Player then return end
-        if #(pCoords - boob) > 10 then print('Mod menu exploit') return end
+        if #(pCoords - homie) > 10 then print('Mod menu exploit') return end
         if Config.Payment == 'cash' then
             Player.Functions.AddMoney('cash', Config.JobPay)
         elseif Config.Payment == 'bank' then
@@ -58,7 +58,7 @@ AddEventHandler('setlight:off', function(location)
 end)
 
 local resourceName = "EFn_ElectricJob"
-local currentVersion = "1.0.0" -- Replace with your current version
+local currentVersion = "1.0.0" -- version
 
 PerformHttpRequest(
     "https://api.github.com/repos/EFn-Scripts/EFn_ElectricJob/releases/latest",
