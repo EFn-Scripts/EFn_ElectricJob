@@ -56,3 +56,27 @@ AddEventHandler('setlight:off', function(location)
     local loc = location
     TriggerClientEvent("setlight:off", -1, loc)
 end)
+
+local resourceName = "EFn_ElectricJob"
+local currentVersion = "1.0.0" -- Replace with your current version
+
+PerformHttpRequest(
+    "https://api.github.com/repos/EFn-Scripts/EFn_ElectricJob/releases/latest",
+    function(statusCode, response, headers)
+        if statusCode == 200 then
+            local releaseData = json.decode(response)
+            local latestVersion = releaseData.tag_name
+
+            if latestVersion > currentVersion then
+                print("A new version of " .. resourceName .. " is available. Please update your resource.")
+            else
+                print(resourceName .. " is up to date.")
+            end
+        else
+            print("Failed to check for updates for " .. resourceName .. ".")
+        end
+    end,
+    "GET",
+    "",
+    { ["Content-Type"] = "application/json" }
+)
