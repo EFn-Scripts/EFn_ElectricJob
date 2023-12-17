@@ -237,7 +237,6 @@ fixPole = function()
                 disableCombat = false,
             }, {}, {}, {}, function()
                 ClearPedTasksImmediately(ped)
-                print(jobLoc)
                 TriggerServerEvent("setlight:on", jobLoc)
                 needJob = true
                 jobComplete = true
