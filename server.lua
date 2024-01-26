@@ -29,7 +29,7 @@ AddEventHandler('GetPaid', function(homie)
         elseif Config.Payment == 'bank' then
             xPlayer.addAccountMoney('bank', Config.JobPay)
         end
-    elseif Config.Framework == 'QBCore' then
+    elseif Config.Framework == 'qbcore' then
         local _source = source
         local Player = QBCore.Functions.GetPlayer(_source)
         local pCoords = GetEntityCoords(GetPlayerPed(_source))
