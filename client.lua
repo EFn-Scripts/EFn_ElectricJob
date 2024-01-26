@@ -183,7 +183,6 @@ giveJob = function()
             Wait(1000)
             local playerCoords = GetEntityCoords(ped)
             local distanceToJobLoc = #(playerCoords - jobLoc)
-            print(distanceToJobLoc)
             if duty and distanceToJobLoc < 250.0 then
                 TriggerServerEvent("setlight:off", jobLoc)
 		break
